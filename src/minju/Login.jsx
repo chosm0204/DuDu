@@ -15,17 +15,17 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-b from-[#E6F2FF] to-white flex flex-col items-center">
+    <div className="w-full min-h-screen bg-gradient-to-b from-[#E6F2FF] to-white flex flex-col items-center pt-10">
       {/*========== 헤더 ==========*/}
-      <header className="w-full flex items-center px-10 pt-5">
+      <header className="w-full flex items-center px-10">
         <Link to="/">
-          <img src="/logo.png" alt="로고" className="w-10 h-10" />
+          <img src="/logo.png" alt="로고" className="w-12 h-12" />
         </Link>
       </header>
 
       {/*========== 로그인 부분 ==========*/}
-      <main className="flex flex-col items-center mt-8">
-        <img src="/logo.png" alt="로고" className="w-40 h-40 mb-6" />
+      <main className="flex flex-col items-center mt-5">
+        <img src="/logo.png" alt="로고" className="w-35 h-35 mb-6" />
 
         <p className="text-[#2F7DFF] text-[35px] font-bold text-center leading-snug mb-8">
           로그인하고

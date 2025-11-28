@@ -62,11 +62,18 @@ export default function Home4() {
                 {q.choices && (
                   <ul className="text-[18px] space-y-2">
                     {q.choices.map((choice, i) => (
-                      <li key={choice}
-                        className={i === q.answerIndex ? "font-bold text-[#2F7DFF]" : ""}>
-                        {choice}
-                      </li>
-                    ))}
+                      <li key={choice}>
+                        <span
+                          className={
+                            i === q.answerIndex
+                              ? "bg-[#D0E5FF] px-1 rounded-md font-bold text-[#2F7DFF]"
+                              : ""
+                          }
+                        >
+                      {choice}
+                    </span>
+                  </li>
+                  ))}
                   </ul>
                 )}
               </div>

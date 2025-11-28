@@ -6,6 +6,8 @@ import DuduQuiz from "./minju/DuduQuiz";
 import DuduNote from "./minju/DuduNote";
 import Report from "./minju/Report";
 import Login from "./minju/Login";
+import Register from "./minju/Register";
+
 
 export default function App() {
   return (
@@ -15,6 +17,7 @@ export default function App() {
       <Route path="/dudunote" element={<DuduNote />} />
       <Route path="/report" element={<Report />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
     </Routes>
   );
 }

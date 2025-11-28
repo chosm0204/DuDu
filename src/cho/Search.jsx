@@ -5,10 +5,55 @@ import { useNavigate, useLocation } from "react-router-dom";
 const clipIcon = "/clip.png";
 const micIcon = "/mic.png";
 
+// ===================== 🔐 API KEY =====================
+const API_KEY = "AIzaSyCh6lm9rUbYgqw_CTaI3OVFe5dS-66wJ0I";
+
+// ===================== 🤖 Gemini 호출 함수 =====================
 async function callGeminiAPI(userText) {
-  return `[임시 답변] "${userText}" 에 대한 카드뉴스/설명이 여기에 들어갈 거예요.`;
+  if (!API_KEY) {
+    console.error("🚨 API 키 없음");
+    return "⚠️ 서버 설정 오류: API 키가 없습니다. 개발자에게 문의해 주세요.";
+  }
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
+  console.log("Gemini 요청 URL:", url);
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            role: "user",
+            parts: [{ text: userText }],
+          },
+        ],
+      }),
+    });
+
+    if (!response.ok) {
+      const errTxt = await response.text();
+      console.error("Gemini API 에러:", errTxt);
+      return "⚠️ 답변을 가져오는 데 문제가 발생했어요. 잠시 후 다시 시도해 주세요.";
+    }
+
+    const data = await response.json();
+
+    const text =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ??
+      "⚠️ 응답에서 텍스트를 찾을 수 없어요.";
+
+    return text;
+  } catch (err) {
+    console.error("Gemini 호출 중 오류:", err);
+    return "⚠️ 네트워크 오류가 발생했어요. 인터넷 연결을 확인해 주세요.";
+  }
 }
 
+// ===================== 💬 Search 컴포넌트 =====================
 export default function Search() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -20,10 +65,9 @@ export default function Search() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // ✅ 초기 쿼리를 추적하는 ref
   const processedQuery = useRef("");
 
-  // 공통으로 쓰는 "메시지 보내기" 로직
+  // 공통 "메시지 보내기"
   const sendMessage = async (text) => {
     if (!text.trim()) return;
 
@@ -37,52 +81,31 @@ export default function Search() {
     setInput("");
     setIsLoading(true);
 
-    try {
-      const reply = await callGeminiAPI(text.trim());
+    const reply = await callGeminiAPI(text.trim());
 
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: Date.now() + 1,
-          role: "assistant",
-          text: reply,
-        },
-      ]);
-    } catch (err) {
-      console.error(err);
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: Date.now() + 2,
-          role: "assistant",
-          text: "답변을 가져오는 데 실패했어요. 잠시 후 다시 시도해 주세요.",
-        },
-      ]);
-    } finally {
-      setIsLoading(false);
-    }
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now() + 1,
+        role: "assistant",
+        text: reply,
+      },
+    ]);
+
+    setIsLoading(false);
   };
 
-  // ✅ Home에서 넘어온 쿼리 자동 실행 (중복 방지)
+  // Home에서 넘어온 쿼리 자동 실행
   useEffect(() => {
-    // 같은 쿼리를 이미 처리했으면 무시
     if (initialQuery && initialQuery !== processedQuery.current) {
       processedQuery.current = initialQuery;
       sendMessage(initialQuery);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialQuery]);
 
-  // 하단 검색바 컴포넌트
+  // 하단 검색바
   const SearchBar = (
-    <div
-      className="
-        flex items-center bg-white
-        w-[820px] max-w-[820px]
-        px-8 py-5
-        rounded-[999px] border-4 border-[#2F7DFF] shadow-sm
-      "
-    >
+    <div className="flex items-center bg-white w-[820px] max-w-[820px] px-8 py-5 rounded-[999px] border-4 border-[#2F7DFF] shadow-sm">
       <img src={clipIcon} alt="첨부" className="w-10 h-10 mr-3" />
 
       <input
@@ -92,19 +115,11 @@ export default function Search() {
         value={input}
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            sendMessage(input);
-          }
+          if (e.key === "Enter") sendMessage(input);
         }}
       />
 
-      <button
-        type="button"
-        className="mr-3"
-        onClick={() => {
-          // 나중에 음성 인식 붙이면 여기
-        }}
-      >
+      <button type="button" className="mr-3">
         <img src={micIcon} alt="음성 입력" className="w-6 h-8" />
       </button>
 
@@ -117,11 +132,10 @@ export default function Search() {
     </div>
   );
 
+  // 화면
   return (
     <div className="relative flex flex-col items-center min-h-screen bg-gradient-to-b from-[#e7efff] to-white font-sans pt-24">
-      {/* CHAT 영역 */}
       <main className="flex-1 w-full max-w-[1200px] flex flex-col items-center">
-        {/* 메시지 리스트 */}
         <div className="flex-1 w-full flex flex-col px-10 pt-4 pb-6 overflow-y-auto">
           {messages.length === 0 && !isLoading && (
             <div className="flex-1 flex items-center justify-center">
@@ -166,7 +180,6 @@ export default function Search() {
           )}
         </div>
 
-        {/* 하단 검색바 */}
         <div className="w-full flex justify-center pb-8">{SearchBar}</div>
       </main>
     </div>

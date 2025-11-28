@@ -1,6 +1,6 @@
 // src/minju/Homes/HomeAll.jsx
 import React from "react";
-import Home from "../Home"; // ✅ 상위 폴더에서 가져오기
+import Home from "./Home";
 import Home1 from "./Home1";
 import Home2 from "./Home2";
 import Home3 from "./Home3";
@@ -16,8 +16,6 @@ export default function HomeAll() {
     >
       {/* 메인 검색 영역 */}
       <Home />
-
-      {/* 아래 홈 섹션들 */}
       <div className="h-[250px]"></div>
       <Home1 />
       <Home2 />

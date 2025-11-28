@@ -6,11 +6,13 @@ import DuduQuiz from "./minju/DuduQuiz";
 import DuduNote from "./minju/DuduNote";
 import Report from "./minju/Report";
 import Login from "./minju/Login";
+import Search from "./cho/Search";
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/search" element={<Search />} />
       <Route path="/duduquiz" element={<DuduQuiz />} />
       <Route path="/dudunote" element={<DuduNote />} />
       <Route path="/report" element={<Report />} />

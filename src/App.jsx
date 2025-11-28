@@ -11,6 +11,7 @@ import Search from "./cho/Search";
 import Register from "./minju/Register";
 import Header from "./Header";
 import SideBar from "./SideBar";
+import RegisterUnder14 from "./minju/RegisterUnder14";
 
 export default function App() {
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="/report" element={<Report />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/register/under14" element={<RegisterUnder14 />} />
       </Routes>
 
       <SideBar isOpen={isSideBarOpen} onClose={() => setIsSideBarOpen(false)} />

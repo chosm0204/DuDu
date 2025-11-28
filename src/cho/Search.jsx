@@ -1,33 +1,27 @@
 // src/cho/Search.jsx
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import React, { useEffect, useState, useRef } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
-const logo = "/logo.png";
 const clipIcon = "/clip.png";
 const micIcon = "/mic.png";
 
 async function callGeminiAPI(userText) {
-  // ✅ 나중에 여기만 실제 Gemini 호출 코드로 교체하면 됨
-  // 예시:
-  // const res = await fetch("/api/gemini-chat", {...});
-  // const data = await res.json();
-  // return data.reply;
-
-  // 일단은 동작 확인용 임시 응답
   return `[임시 답변] "${userText}" 에 대한 카드뉴스/설명이 여기에 들어갈 거예요.`;
 }
 
 export default function Search() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const location = useLocation();
 
-  const initialQuery = searchParams.get("q") || "";
+  const initialQuery = location.state?.query || "";
+  const initialSubject = location.state?.subject || "";
 
-  // 메시지 리스트: { id, role: "user" | "assistant", text }
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState(""); // 하단 입력창
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // ✅ 초기 쿼리를 추적하는 ref
+  const processedQuery = useRef("");
 
   // 공통으로 쓰는 "메시지 보내기" 로직
   const sendMessage = async (text) => {
@@ -39,28 +33,17 @@ export default function Search() {
       text: text.trim(),
     };
 
-    // 유저 메시지 + "카드뉴스 생성 중..." 말풍선 추가
-    setMessages((prev) => [
-      ...prev,
-      userMessage,
-      {
-        id: Date.now() + 1,
-        role: "assistant",
-        text: "카드뉴스 생성 중...",
-      },
-    ]);
-
+    setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
 
     try {
       const reply = await callGeminiAPI(text.trim());
 
-      // 실제 Gemini 응답 말풍선 추가
       setMessages((prev) => [
         ...prev,
         {
-          id: Date.now() + 2,
+          id: Date.now() + 1,
           role: "assistant",
           text: reply,
         },
@@ -70,7 +53,7 @@ export default function Search() {
       setMessages((prev) => [
         ...prev,
         {
-          id: Date.now() + 3,
+          id: Date.now() + 2,
           role: "assistant",
           text: "답변을 가져오는 데 실패했어요. 잠시 후 다시 시도해 주세요.",
         },
@@ -80,9 +63,11 @@ export default function Search() {
     }
   };
 
-  // Home에서 /search?q=... 로 넘어왔을 때, 처음 한 번 자동 전송
+  // ✅ Home에서 넘어온 쿼리 자동 실행 (중복 방지)
   useEffect(() => {
-    if (initialQuery) {
+    // 같은 쿼리를 이미 처리했으면 무시
+    if (initialQuery && initialQuery !== processedQuery.current) {
+      processedQuery.current = initialQuery;
       sendMessage(initialQuery);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -124,20 +109,29 @@ export default function Search() {
       </button>
 
       <button
-        className="w-9 h-9 rounded-full bg-[#2F7DFF] flex items-center justify-center text-white text-lg"
+        className="flex items-center justify-center"
         onClick={() => sendMessage(input)}
       >
-        ↑
+        <img src="/search.png" alt="검색" className="w-9 h-9" />
       </button>
     </div>
   );
 
   return (
-    <div className="relative flex flex-col items-center min-h-screen bg-gradient-to-b from-[#e7efff] to-white font-sans">
-      {/* ---------------------- CHAT 영역 ---------------------- */}
+    <div className="relative flex flex-col items-center min-h-screen bg-gradient-to-b from-[#e7efff] to-white font-sans pt-24">
+      {/* CHAT 영역 */}
       <main className="flex-1 w-full max-w-[1200px] flex flex-col items-center">
         {/* 메시지 리스트 */}
         <div className="flex-1 w-full flex flex-col px-10 pt-4 pb-6 overflow-y-auto">
+          {messages.length === 0 && !isLoading && (
+            <div className="flex-1 flex items-center justify-center">
+              <p className="text-gray-400 text-xl">
+                {initialSubject && `[${initialSubject}] `}
+                궁금한 것을 질문해 보세요
+              </p>
+            </div>
+          )}
+
           {messages.map((msg) => {
             const isUser = msg.role === "user";
             return (
@@ -149,7 +143,7 @@ export default function Search() {
               >
                 <div
                   className={`
-                    max-w-[70%] px-6 py-3 rounded-full text-lg
+                    max-w-[70%] px-6 py-3 rounded-3xl text-lg
                     ${
                       isUser
                         ? "bg-[#2F7DFF] text-white"
@@ -165,7 +159,7 @@ export default function Search() {
 
           {isLoading && (
             <div className="w-full flex justify-start mb-4">
-              <div className="bg-white px-6 py-3 rounded-full shadow-md text-gray-500 text-lg">
+              <div className="bg-white px-6 py-3 rounded-3xl shadow-md text-gray-500 text-lg">
                 생각 중...
               </div>
             </div>
@@ -173,7 +167,7 @@ export default function Search() {
         </div>
 
         {/* 하단 검색바 */}
-        <div className="w-full flex justify-center mb-8">{SearchBar}</div>
+        <div className="w-full flex justify-center pb-8">{SearchBar}</div>
       </main>
     </div>
   );

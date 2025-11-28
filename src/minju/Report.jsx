@@ -1,6 +1,5 @@
+// src/minju/Report.jsx
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-
 
 const SUBJECTS = [
   { key: "korean", label: "국어", icon: "/korean.png" },
@@ -39,9 +38,9 @@ export default function Report() {
   const [selectedUnit, setSelectedUnit] = useState(null);
   const [selectedView, setSelectedView] = useState(null);
 
-  const units = selectedSubject ? UNITS_BY_SUBJECT[selectedSubject] || [] : [];
+  const units = selectedSubject ? UNITS_BY_SUBJECT[selectedSubject] : [];
   const currentQuizList = selectedSubject
-    ? QUIZ_BY_SUBJECT[selectedSubject] || []
+    ? QUIZ_BY_SUBJECT[selectedSubject]
     : [];
 
   const resetReport = () => {
@@ -52,56 +51,35 @@ export default function Report() {
 
   return (
     <div className="relative flex flex-col items-center min-h-screen bg-gradient-to-b from-[#E6F2FF] to-white font-sans">
-      {/*========== 헤더 ==========*/}
-      <header className="w-full max-w-[1200px] flex items-center justify-between py-6 px-6">
-        <Link to="/">
-          <img src="/logo.png" alt="로고" className="w-[55px] h-[55px] cursor-pointer"/>
-        </Link>
+      {/* 🔹 헤더는 App.jsx에서 공통 렌더링됨 → 이 파일에서는 제거 */}
 
-        <nav className="flex gap-[140px]">
-          <Link to="/duduquiz" className="text-[#2F7DFF] font-semibold text-[20px]">
-            두두퀴즈
-          </Link>
-          <Link to="/dudunote" className="text-[#2F7DFF] font-semibold text-[20px]">
-            두두노트
-          </Link>
-          <Link to="/report" onClick={resetReport} className="text-[#2F7DFF] font-black text-[20px]">
-            리포트
-          </Link>
-        </nav>
-
-        <div className="flex items-center gap-4">
-          <Link to="/login" className="rounded-[20px] px-5 py-2 border font-bold border-[#2F7DFF] bg-[#2F7DFF] text-white text-sm flex items-center justify-center">
-            로그인
-          </Link>
-
-          <button className="w-[48px] h-[48px] flex items-center justify-center text-[#2F7DFF]">
-            <span className="text-3xl leading-none">☰</span>
-          </button>
-        </div>
-      </header>
-
-      {/*========== 리포트 ==========*/}
-      <main className="w-full max-w-[1200px] flex flex-col items-center mt-4">
-        <h1 className="text-[64px] font-extrabold bg-gradient-to-r from-[#60A5FA] to-[#027FFF] bg-clip-text text-transparent mb-8">
+      {/* 헤더 높이만큼 패딩 */}
+      <main className="w-full max-w-[1200px] flex flex-col items-center pt-[140px] pb-20">
+        <h1
+          className="text-[64px] font-extrabold bg-gradient-to-r from-[#60A5FA] to-[#027FFF] 
+                      bg-clip-text text-transparent mb-8"
+        >
           리포트
         </h1>
 
-        {/*========== 과목 선택 ==========*/}
+        {/* -------------------- 과목 선택 -------------------- */}
         <section className="flex flex-wrap justify-center gap-5 mb-10">
           {SUBJECTS.map(({ key, label, icon }) => {
             const isActive = selectedSubject === key;
             return (
-              <button key={key} type="button"
+              <button
+                key={key}
+                type="button"
                 onClick={() => {
                   setSelectedSubject(key);
                   setSelectedUnit(0);
                   setSelectedView(null);
                 }}
-                className={`rounded-[18px] w-[115px] h-[115px] flex flex-col justify-center items-center shadow-[0_8px_20px_rgba(0,0,0,0.06)] cursor-pointer transition-all duration-200
+                className={`rounded-[18px] w-[115px] h-[115px] flex flex-col justify-center items-center 
+                  shadow-[0_8px_20px_rgba(0,0,0,0.06)] cursor-pointer transition-all duration-200
                   ${isActive ? "bg-[#2F7DFF]" : "bg-white"}`}
               >
-                <img src={icon} alt={`${label} 아이콘`} className="w-10 h-10 mb-2"/>
+                <img src={icon} alt={label} className="w-10 h-10 mb-2" />
                 <span
                   className={`text-[16px] ${
                     isActive
@@ -116,16 +94,18 @@ export default function Report() {
           })}
         </section>
 
-        {/*========== 단원 + 모아보기 영역 ==========*/}
+        {/* -------------------- 단원 + 보기 선택 영역 -------------------- */}
         <section className="w-full max-w-[1100px] mx-auto flex justify-center gap-16 mt-4">
-
+          {/* 단원 리스트 */}
           <div className="w-[320px] flex-shrink-0">
             <h2 className="text-[22px] font-extrabold mb-6">단원</h2>
             <div className="flex flex-col gap-4">
               {units.map((unitLabel, idx) => {
                 const active = idx === selectedUnit;
                 return (
-                  <button key={unitLabel} type="button"
+                  <button
+                    key={unitLabel}
+                    type="button"
                     onClick={() => setSelectedUnit(idx)}
                     className={`w-[320px] text-left px-7 py-4 rounded-[999px] text-[23px]
                       shadow-[0_8px_20px_rgba(0,0,0,0.04)]
@@ -145,12 +125,14 @@ export default function Report() {
 
           <div className="w-px bg-gray-300 flex-shrink-0" />
 
+          {/* 오른쪽 영역 */}
           <div className="flex-1">
             <h2 className="text-[22px] font-extrabold mb-6">
               {selectedView === "quiz" ? "퀴즈" : "모아보기"}
             </h2>
 
             <div className="flex gap-6">
+              {/* 카드뉴스 / 퀴즈 선택 UI */}
               {selectedView !== "quiz" && (
                 <div className="flex gap-6">
                   <button
@@ -162,7 +144,7 @@ export default function Report() {
                   >
                     <img
                       src="/cardnews.png"
-                      alt="카드뉴스 아이콘"
+                      alt="카드뉴스"
                       className="w-[75px] h-[75px] mb-4"
                     />
                     <p className="text-[25px] font-extrabold">카드뉴스</p>
@@ -177,7 +159,7 @@ export default function Report() {
                   >
                     <img
                       src="/quiz.png"
-                      alt="퀴즈 아이콘"
+                      alt="퀴즈"
                       className="w-[65px] h-[75px] mb-4"
                     />
                     <p className="text-[25px] font-extrabold">퀴즈</p>
@@ -185,8 +167,12 @@ export default function Report() {
                 </div>
               )}
 
+              {/* 퀴즈 리스트 */}
               {selectedView === "quiz" && (
-                <div className="w-[440px] bg-white rounded-[24px] shadow-[0_12px_24px_rgba(0,0,0,0.06)] px-10 py-8 space-y-4">
+                <div
+                  className="w-[440px] bg-white rounded-[24px] shadow-[0_12px_24px_rgba(0,0,0,0.06)]
+                                px-10 py-8 space-y-4"
+                >
                   {currentQuizList.map((text, idx) => (
                     <div
                       key={idx}

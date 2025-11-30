@@ -313,7 +313,7 @@ export default function Search() {
 
   return (
     <div className="flex flex-col h-screen bg-gradient-to-b from-[#e7efff] to-white font-sans">
-      <main className="flex-1 w-full max-w-[1000px] mx-auto px-4 overflow-y-auto pt-24 pb-10 scrollbar-hide">
+      <main className="flex-1 w-full max-w-[1000px] mx-auto px-4 overflow-y-auto pt-30 pb-10 scrollbar-hide">
         {messages.length === 0 && !isLoading && (
           <div className="h-full flex flex-col items-center justify-center text-gray-400">
             <div className="w-20 h-20 mb-4 rounded-full bg-white border-2 border-[#2F7DFF] flex items-center justify-center shadow-sm">

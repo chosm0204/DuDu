@@ -9,6 +9,7 @@ import random
 import time
 import shutil
 import uuid
+import re  # ✅ 정규표현식 모듈 추가
 
 # RAG 관련 라이브러리
 from langchain_community.vectorstores import Chroma
@@ -299,16 +300,19 @@ def handle_search():
         })
 
 # =========================================================
-# 💡 [수정] 추천 질문 생성 API (과목별 필터링 및 캐싱)
+# 💡 [수정] 추천 질문 생성 API (과목별 파일 필터링 추가)
 # =========================================================
 @app.route("/recommendations", methods=["GET"])
 def get_recommendations():
-    subject = request.args.get("subject", "general") # 쿼리 파라미터로 과목 받기
+    # 쿼리 파라미터로 과목 받기 (없으면 general)
+    subject = request.args.get("subject")
+    if not subject: subject = "general"
+    
     print(f"💡 추천 질문 요청 받음 (과목: {subject})")
     
-    # 과목별 캐시 파일 이름 사용
+    # 과목별 캐시 파일 분리
     CACHE_FILE = os.path.join(BASE_DIR, f"recommendations_cache_{subject}.json")
-    CACHE_DURATION = 3600  # 1시간 동안 유효
+    CACHE_DURATION = 3600  # 1시간
     
     default_questions = [
         "🦖 공룡은 왜 사라졌을까?", "🌈 무지개는 어떻게 생겨?", 
@@ -316,33 +320,74 @@ def get_recommendations():
         "🦷 이빨은 왜 빠지는 거야?", "🐳 고래는 물고기가 아니야?"
     ]
 
-    # 1. 캐시 확인 (파일이 있고, 만든지 1시간 이내면 사용)
+    # 1. 캐시 확인
     if os.path.exists(CACHE_FILE):
         try:
             with open(CACHE_FILE, "r", encoding="utf-8") as f:
                 file_mod_time = os.path.getmtime(CACHE_FILE)
                 if time.time() - file_mod_time < CACHE_DURATION:
                     all_questions = json.load(f)
-                        
                     if all_questions and isinstance(all_questions, list):
-                        # 저장된 질문들 중에서 랜덤 6개 뽑기 (속도 빠름!)
                         selected_questions = random.sample(all_questions, min(len(all_questions), 6))
                         print(f"🚀 캐시된 데이터에서 랜덤 반환 완료 (과목: {subject})")
                         return jsonify(selected_questions)
         except Exception as e:
             print(f"⚠️ 캐시 읽기 실패: {e}")
 
-    # 2. 캐시가 없거나 오래됐으면 새로 생성 (Gemini 호출)
+    # 2. 캐시 없으면 생성 (Gemini 호출)
     try:
-        text_files = glob.glob(os.path.join(DATA_FOLDER, "*.txt"))
+        # ✅ 과목 코드와 한글 키워드 매핑
+        alternate_keywords = ["실과", "체육", "미술", "음악", "도덕"]
         
-        if not text_files:
+        keyword_map = {
+            "math": ["수학"],
+            "science": ["과학"],
+            "society": ["사회"],
+            "english": ["영어"],
+            "korean": alternate_keywords,
+            "history": alternate_keywords
+        }
+        
+        target_keywords = keyword_map.get(subject)
+        
+        # 모든 텍스트 파일 가져오기
+        all_text_files = glob.glob(os.path.join(DATA_FOLDER, "*.txt"))
+        
+        target_files = []
+        
+        if subject == "general" or not target_keywords:
+            target_files = all_text_files
+        else:
+            for f in all_text_files:
+                for kw in target_keywords:
+                    if kw in os.path.basename(f):
+                        target_files.append(f)
+                        break
+            
+            if not target_files:
+                print(f"⚠️ {subject} 관련 파일 없음. 전체 파일 중 랜덤 선택.")
+                target_files = all_text_files
+
+        if not target_files:
             return jsonify(default_questions)
 
-        # 랜덤 파일 선택
-        selected_file = random.choice(text_files)
+        # 필터링된 파일들 중에서 랜덤 선택
+        selected_file = random.choice(target_files)
+        print(f"📖 읽고 있는 파일: {os.path.basename(selected_file)}")
+        
         with open(selected_file, "r", encoding="utf-8") as f:
-            content = f.read()[:3000]
+            full_content = f.read()
+
+        # 🔥 [추가] 텍스트 정제 (한글, 영어, 숫자, 기본 구두점/공백만 유지)
+        full_content = re.sub(r"[^가-힣a-zA-Z0-9\s\.\,\?\!]", " ", full_content)
+        full_content = re.sub(r"\s+", " ", full_content).strip()  # 연속된 공백 정리
+            
+        # 내용이 3000자보다 길면 중간 어딘가를 랜덤으로 자름 (앞부분 목차 회피)
+        if len(full_content) > 3000:
+            start_index = random.randint(0, len(full_content) - 3000)
+            content = full_content[start_index : start_index + 3000]
+        else:
+            content = full_content
 
         api_key = os.environ.get("GEMINI_API_KEY")
         if not api_key: return jsonify(default_questions)
@@ -350,30 +395,35 @@ def get_recommendations():
         genai.configure(api_key=api_key)
         model = genai.GenerativeModel('gemini-2.5-flash')
 
-        # ⭐️ 프롬프트에 과목 정보 추가
-        subject_instruction = f"질문은 **{subject}** 과목 내용과 관련되도록 집중해서 만들어주세요." if subject != "general" else ""
+        # 프롬프트 설정 (과목별로 다르게 지시)
+        if subject in ["korean", "history"]:
+            subject_instruction = "이 텍스트 내용 중에서 아이들이 가장 신기해할 만한 사실을 찾아서 질문으로 바꿔주세요."
+        else:
+            subject_instruction = f"질문은 **{subject}** 과목 학습 내용과 관련되도록 만들어주세요."
         
+        # ⭐️ [핵심 수정] 질문 퀄리티를 높이는 강력한 프롬프트
         prompt = f"""
-        당신은 초등학생 AI 선생님입니다. 아래 텍스트 내용은 아이들을 위한 교육 자료입니다.
-        이 내용을 바탕으로 초등학생들이 호기심을 가질 만한 '재미있는 질문' 20개를 만들어주세요.
+        당신은 아이들의 호기심을 자극하는 '퀴즈 탐험대장'입니다.
+        아래 텍스트는 교과서의 일부입니다. 이 내용을 바탕으로 친구에게 낼 수 있는 **'재미있는 퀴즈 질문'** 20개를 만들어주세요.
         
         [텍스트 내용]
         {content}
         
         {subject_instruction}
 
-        [★매우 중요 규칙★]
-        1. **반드시 위 [텍스트 내용] 안에 정답이 있는 질문만 만드세요.**
-        2. 상상해서 질문을 만들거나, 텍스트에 없는 내용을 묻지 마세요.
-        3. 나중에 이 질문으로 검색했을 때, 위 텍스트가 검색 결과로 나와야 합니다.
-        4. **⭐ 질문 생성 강화:** 질문은 [텍스트 내용]에 명시적으로 언급된 단어를 중심으로 구성하여, 벡터 검색 시 높은 유사도를 얻을 수 있도록 구체적인 질문을 만드세요.
-        5. **❌ 일반 지식 질문 금지:** 대중적이거나 일반적인 상식은 만들지 마세요. 오직 이 자료에만 존재하는 고유 정보에 대한 질문만 만드세요.
+        [★질문 생성 규칙★]
+        1. **단순한 정의를 묻지 마세요.** (예: "광합성이란?" (X) -> "식물은 어떻게 햇빛을 먹을까? 🌿" (O))
+        2. **'왜?' 또는 '어떻게?'로 시작하는 호기심 질문**을 우선하세요.
+        3. 반드시 **위 [텍스트 내용] 안에 정답이 있는 내용**이어야 합니다. (없는 내용 지어내기 금지)
+        4. 어른스러운 말투 대신, **초등학생이 친구에게 물어보는 듯한 말투**를 사용하세요.
+        5. 질문 앞에는 관련된 **이모지**를 꼭 붙여주세요.
+        6. **[중요] 질문은 띄어쓰기 포함 25자 이내로 만드세요.** ["🚀 우주선 안에서는 왜 둥둥 떠다니게 될까?", "🐜 개미는 왜 항상 줄을 지어 다니는 걸까?", "💡 전구는 어떻게 뜨거워지지 않고 빛을 낼까?"]
 
+        [출력 예시]
+        ["🚀 우주선은 왜 떠다녀?", "🐜 개미는 왜 줄 서?", "💡 전구는 어떻게 빛나?"]
         
         [형식 조건]
-        1. 질문은 20자 이내로 짧고 간결하게.
-        2. 질문 앞에 내용과 어울리는 이모지를 꼭 붙여주세요.
-        3. 반드시 JSON 리스트 포맷으로만 출력하세요. (예: ["질문1", "질문2"...])
+        반드시 JSON 리스트 포맷으로만 출력하세요. 마크다운 없이 순수 JSON만 주세요.
         """
 
         response = model.generate_content(prompt)
@@ -397,6 +447,16 @@ def get_recommendations():
         print(f"🚨 추천 질문 생성 실패: {e}")
         return jsonify(default_questions)
 
+# 🔄 서버 시작 시 기존 캐시 파일 삭제 (클린 스타트)
 if __name__ == '__main__':
+    print("🧹 기존 추천 질문 캐시 삭제 중...")
+    cache_files = glob.glob(os.path.join(BASE_DIR, "recommendations_cache_*.json"))
+    for f in cache_files:
+        try:
+            os.remove(f)
+            print(f" - 삭제됨: {os.path.basename(f)}")
+        except Exception as e:
+            print(f" - 삭제 실패: {e}")
+
     setup_rag_pipeline()
     app.run(host='0.0.0.0', port=5001, debug=True)

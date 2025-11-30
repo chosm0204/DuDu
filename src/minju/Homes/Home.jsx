@@ -37,7 +37,7 @@ export default function Home() {
 
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
- 
+        
         setRecommendations(data || []);
       } catch (error) {
         console.error("추천 질문 로딩 실패:", error);
@@ -91,14 +91,85 @@ export default function Home() {
         setHover(null);
       }}
     >
-      <main className="pt-[180px] pb-[40px] flex flex-col items-center w-full px-4">
-        <h1 className="text-[65px] md:text-[84px] font-extrabold tracking-tight bg-gradient-to-r from-[#60A5FA] to-[#027FFF] bg-clip-text text-transparent text-center leading-tight">
+      {/* 화면 중앙 정렬 및 패딩 조정 */}
+      <main className="pt-[120px] pb-[150px] flex flex-col items-center justify-center w-full px-4">
+        
+        {/* 1. 제목 영역 */}
+        {/* mb-12 -> mb-24로 간격 확대 */}
+        <h1 className="text-[65px] md:text-[84px] font-extrabold tracking-tight bg-gradient-to-r from-[#60A5FA] to-[#027FFF] bg-clip-text text-transparent text-center leading-tight mb-14">
           {title}
         </h1>
 
-        {/* 검색창 */}
+        {/* 2. 과목 아이콘 섹션 */}
+        {/* mb-10 -> mb-20로 간격 확대 */}
+        <section className="flex flex-wrap justify-center gap-5 mb-15">
+          {SUBJECTS.map(({ key, label, icon }) => (
+            <button
+              key={key}
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleSubjectClick(key);
+              }}
+              onMouseEnter={() => setHover(key)}
+              onMouseLeave={() => setHover(null)}
+              // 🔥 [수정] focus:outline-none 추가
+              className={`rounded-[18px] w-[115px] h-[115px] flex flex-col justify-center items-center shadow-[0_8px_20px_rgba(0,0,0,0.06)] cursor-pointer transition-all duration-200 focus:outline-none ${
+                hover === key || selected === key
+                  ? "bg-[#60A5FA] text-white scale-105"
+                  : "bg-white text-gray-900"
+              }`}
+            >
+              <img
+                src={icon}
+                alt={label}
+                className={`w-10 h-10 mb-2 transition-filter duration-200`}
+              />
+              <span
+                className={`font-semibold text-[16px] ${
+                  hover === key || selected === key
+                    ? "text-white"
+                    : "text-gray-900"
+                }`}
+              >
+                {label}
+              </span>
+            </button>
+          ))}
+        </section>
+
+        {/* 3. 추천 질문 칩 영역 (높이 고정) */}
+        {/* h-[160px]로 높이를 고정하여 내부 콘텐츠가 변해도 아래 검색창이 움직이지 않게 함 */}
+        {/* mb-8 -> mb-16로 간격 확대 */}
+        <div className="flex flex-wrap justify-center content-center gap-3 w-full max-w-[900px] h-[200px] overflow-hidden mb-16 transition-all">
+          {loading ? (
+            <div className="text-gray-400 animate-pulse text-lg">
+              두두가 질문을 생각하고 있어요... 🤔
+            </div>
+          ) : recommendations.length > 0 ? (
+            recommendations.map((chip, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleChipClick(chip);
+                }}
+                className="px-5 py-3 bg-white border-2 border-[#e7efff] text-gray-600 rounded-full text-lg font-medium shadow-sm hover:border-[#2F7DFF] hover:text-[#2F7DFF] hover:bg-[#e7efff]/30 transition-all transform hover:-translate-y-1 focus:outline-none"
+              >
+                {chip}
+              </button>
+            ))
+          ) : (
+            <div className="text-gray-400 text-lg font-medium">
+              추천 질문이 없어요. 궁금한 점을 직접 물어보세요! 👋
+            </div>
+          )}
+        </div>
+
+        {/* 4. 검색창 (이제 main 흐름 안에 자연스럽게 배치됨) */}
         <div
-          className="mt-8 flex items-center bg-white w-[820px] max-w-full px-8 py-5 rounded-[999px] border-4 border-[#2F7DFF] shadow-sm cursor-text focus:outline-none" // 포커스 아웃라인 제거
+          className="flex items-center bg-white w-[820px] max-w-full px-8 py-5 rounded-[999px] border-4 border-[#2F7DFF] shadow-lg cursor-text focus:outline-none transition-all hover:shadow-xl"
           onClick={(e) => e.stopPropagation()}
         >
           <img src={clipIcon} alt="클립" className="w-9 h-9" />
@@ -113,81 +184,17 @@ export default function Home() {
           />
           <button
             type="button"
-            className="mr-3 focus:outline-none" // 포커스 아웃라인 제거
+            className="mr-3 focus:outline-none"
             onClick={(e) => e.stopPropagation()}
           >
-            <img src={micIcon} alt="음성입력" className="w-6 h-8 opacity-50 hover:opacity-100" />
-         </button>
-          <button type="button" onClick={() => handleSubmit()} className="focus:outline-none"> // 포커스 아웃라인 제거
-           <img src="/search.png" alt="검색" className="w-9 h-9" />
+            <img src={micIcon} alt="음성입력" className="w-6 h-8 opacity-50 hover:opacity-100 transition-opacity" />
+          </button>
+          <button type="button" onClick={() => handleSubmit()} className="focus:outline-none">
+            <img src="/search.png" alt="검색" className="w-9 h-9" />
           </button>
         </div>
 
-        {/* ✅ [수정됨] 추천 질문 칩 영역 - 데이터 없을 때 안내 메시지 표시 */}
-        <div className="flex flex-wrap justify-center gap-3 w-full max-w-[820px] mt-6 min-h-[50px]">
-          {loading ? (
-            <div className="text-gray-400 animate-pulse mt-2">
-              두두가 질문을 생각하고 있어요... 🤔
-            </div>
-          ) : recommendations.length > 0 ? (
-            recommendations.map((chip, idx) => (
-              <button
-                key={idx}
-                type="button"
-               onClick={(e) => {
-                  e.stopPropagation();
-                  handleChipClick(chip);
-                }}
-                className="px-5 py-3 bg-white border-2 border-[#e7efff] text-gray-600 rounded-full text-lg font-medium shadow-sm hover:border-[#2F7DFF] hover:text-[#2F7DFF] hover:bg-[#e7efff]/30 transition-all transform hover:-translate-y-1 focus:outline-none" // 포커스 아웃라인 제거
-              >
-               {chip}
-             </button>
-            ))
-          ) : (
-            <div className="text-gray-400 mt-2 font-medium">
-              추천 질문이 없어요. 궁금한 점을 직접 물어보세요! 👋
-            </div>
-          )}
-        </div>
       </main>
-
-      {/* 과목 아이콘 섹션 */}
-      <section className="flex flex-wrap justify-center gap-5 mt-[20px] pb-20">
-        {SUBJECTS.map(({ key, label, icon }) => (
-          <button
-            key={key}
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleSubjectClick(key); // ✅ 수정된 클릭 핸들러 사용
-            }}
-            onMouseEnter={() => setHover(key)}
-            onMouseLeave={() => setHover(null)}
-            // 🔥 [수정] focus:outline-none 추가 및 스타일 유지
-            className={`rounded-[18px] w-[115px] h-[115px] flex flex-col justify-center items-center shadow-[0_8px_20px_rgba(0,0,0,0.06)] cursor-pointer transition-all duration-200 focus:outline-none ${
-              hover === key || selected === key
-                ? "bg-[#60A5FA] text-white scale-105" // 파란색 배경, 흰색 텍스트 유지
-                : "bg-white text-gray-900"
-            }`}
-           >
-            <img
-              src={icon}
-              alt={label}
-              // 이미지 반전 클래스 제거된 상태 유지
-             className={`w-10 h-10 mb-2 transition-filter duration-200`}
-             />
-             <span
-             className={`font-semibold text-[16px] ${
-               hover === key || selected === key
-                  ? "text-white"
-                  : "text-gray-900"
-             }`}
-            >
-              {label}
-            </span>
-         </button>
-       ))}
-      </section>
     </div>
   );
 }

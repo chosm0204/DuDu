@@ -1,24 +1,62 @@
-# Logs
+-----------------------------------------------
+
+RAG 및 캐시 파일 (대용량 파일)
+
+-----------------------------------------------
+
+벡터 데이터베이스 (9GB 오류의 주 원인)
+
+chroma_db/
+
+원본 PDF 파일
+
+pdfs_input/
+
+Gemini API 및 캐싱이 생성하는 JSON 파일 (추천 질문 캐시 포함)
+
+recommendations_cache*.json
+*.json
+
+-----------------------------------------------
+
+로그 및 임시 파일
+
+-----------------------------------------------
+
 logs
-*.log
-npm-debug.log*
+.log
+npm-debug.log
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+-----------------------------------------------
+
+웹 프로젝트 빌드 및 종속성 (JavaScript/Node)
+
+-----------------------------------------------
+
 node_modules
 dist
 dist-ssr
+
+로컬 환경 파일
+
 *.local
 
-# Editor directories and files
+-----------------------------------------------
+
+IDE 및 OS 생성 파일
+
+-----------------------------------------------
+
 .vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
 *.suo
-*.ntvs*
+.ntvs
 *.njsproj
 *.sln
 *.sw?

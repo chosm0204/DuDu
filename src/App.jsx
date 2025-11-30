@@ -7,7 +7,7 @@ import DuduQuiz from "./minju/DuduQuiz";
 import DuduNote from "./minju/DuduNote";
 import Report from "./minju/Report";
 import Login from "./minju/Login";
-import Search from "./cho/Search";
+import Search from "./sungjin/Search";
 import Register from "./minju/Register";
 import Header from "./Header";
 import SideBar from "./SideBar";

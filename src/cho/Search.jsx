@@ -134,7 +134,7 @@ export default function Search() {
 
   // 화면
   return (
-    <div className="relative flex flex-col items-center min-h-screen bg-gradient-to-b from-[#e7efff] to-white font-sans pt-24">
+    <div className="relative flex flex-col items-center min-h-screen bg-gradient-to-b from-[#e7efff] to-white pt-24">
       <main className="flex-1 w-full max-w-[1200px] flex flex-col items-center">
         <div className="flex-1 w-full flex flex-col px-10 pt-4 pb-6 overflow-y-auto">
           {messages.length === 0 && !isLoading && (

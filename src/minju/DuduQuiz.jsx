@@ -10,22 +10,22 @@ export default function DuduQuiz() {
   return (
     <div
       className="relative flex flex-col items-center min-h-screen 
-                    bg-gradient-to-b from-[#E6F2FF] to-white font-sans"
+                 bg-gradient-to-b from-[#E6F2FF] to-white"
     >
       {/* 헤더 fixed 때문에 여백 */}
       <main className="w-full max-w-[1200px] flex flex-col items-center pt-[140px]">
         <h1
-          className="text-[64px] font-extrabold 
-                       bg-gradient-to-r from-[#60A5FA] to-[#027FFF]
-                       bg-clip-text text-transparent mb-10"
+          className="text-[64px] font-bold 
+                     bg-gradient-to-r from-[#60A5FA] to-[#027FFF]
+                     bg-clip-text text-transparent mb-10"
         >
           두두퀴즈
         </h1>
 
         <section
           className="w-full max-w-[1000px] bg-white rounded-[40px] 
-                            shadow-[0_18px_40px_rgba(0,0,0,0.06)]
-                            flex flex-col items-center pt-10 pb-12"
+                     shadow-[0_18px_40px_rgba(0,0,0,0.06)]
+                     flex flex-col items-center pt-10 pb-12"
         >
           {/* 탭 */}
           <div className="w-full flex justify-center border-b border-[#E5EAF2] pb-4">
@@ -37,11 +37,11 @@ export default function DuduQuiz() {
                   <button
                     key={tab}
                     onClick={() => setSelectedQuizType(tab)}
-                    className={`pb-2 text-[22px]
+                    className={`pb-2 text-[22px] border-b-4
                       ${
                         isActive
-                          ? "font-extrabold text-black border-b-4 border-[#2F7DFF]"
-                          : "font-medium text-gray-400 border-b-4 border-transparent"
+                          ? "font-bold text-black border-[#2F7DFF]"
+                          : "text-gray-400 border-transparent"
                       }`}
                   >
                     {tab}
@@ -60,14 +60,14 @@ export default function DuduQuiz() {
               />
             </div>
 
-            <p className="text-[24px] font-semibold text-gray-900 mb-10 text-center">
+            <p className="text-[24px] font-bold text-gray-900 mb-10 text-center">
               이 그림이 뜻하는 {selectedQuizType}은 무엇일까요?
             </p>
 
             <div
               className="w-[80%] max-w-[700px] flex items-center bg-white 
-                            rounded-[999px] border-4 border-[#2F7DFF]
-                            px-8 py-4 shadow-sm"
+                         rounded-[999px] border-4 border-[#2F7DFF]
+                         px-8 py-4 shadow-sm"
             >
               <input
                 type="text"

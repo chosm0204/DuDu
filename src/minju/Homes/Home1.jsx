@@ -67,18 +67,11 @@ export default function Home2() {
             className="absolute left-[5%] top-0"
             variants={messageItem}
           >
-            <motion.div
-              className="bg-white rounded-[32px] px-8 py-6 shadow-[0_12px_30px_rgba(0,0,0,0.08)] border border-gray-100"
-              whileHover={{
-                scale: 1.05,
-                y: -5,
-                boxShadow: "0 16px 40px rgba(0,0,0,0.12)",
-              }}
-            >
+            <div className="bg-white rounded-[32px] px-16 py-6 shadow-[0_16px_40px_rgba(0,0,0,0.15)] border-2 border-gray-200">
               <p className="text-[22px] font-semibold text-gray-800 whitespace-pre-line leading-relaxed">
                 {messages[0]}
               </p>
-            </motion.div>
+            </div>
           </motion.div>
 
           {/* 오른쪽 상단 */}
@@ -86,18 +79,11 @@ export default function Home2() {
             className="absolute right-[8%] top-[50px]"
             variants={messageItem}
           >
-            <motion.div
-              className="bg-white rounded-[32px] px-8 py-6 shadow-[0_12px_30px_rgba(0,0,0,0.08)] border border-gray-100"
-              whileHover={{
-                scale: 1.05,
-                y: -5,
-                boxShadow: "0 16px 40px rgba(0,0,0,0.12)",
-              }}
-            >
+            <div className="bg-white rounded-[32px] px-16 py-6 shadow-[0_16px_40px_rgba(0,0,0,0.15)] border-2 border-gray-200">
               <p className="text-[22px] font-semibold text-gray-800 whitespace-pre-line leading-relaxed">
                 {messages[1]}
               </p>
-            </motion.div>
+            </div>
           </motion.div>
 
           {/* 왼쪽 중앙 */}
@@ -105,18 +91,11 @@ export default function Home2() {
             className="absolute left-[12%] top-[200px]"
             variants={messageItem}
           >
-            <motion.div
-              className="bg-white rounded-[32px] px-8 py-6 shadow-[0_12px_30px_rgba(0,0,0,0.08)] border border-gray-100"
-              whileHover={{
-                scale: 1.05,
-                y: -5,
-                boxShadow: "0 16px 40px rgba(0,0,0,0.12)",
-              }}
-            >
+            <div className="bg-white rounded-[32px] px-16 py-6 shadow-[0_16px_40px_rgba(0,0,0,0.15)] border-2 border-gray-200">
               <p className="text-[22px] font-semibold text-gray-800 whitespace-pre-line leading-relaxed">
                 {messages[2]}
               </p>
-            </motion.div>
+            </div>
           </motion.div>
 
           {/* 공간 확보용 invisible 요소 */}

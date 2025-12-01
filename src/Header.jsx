@@ -21,19 +21,19 @@ export default function Header({ onMenuClick }) {
         <nav className="flex gap-[140px]">
           <Link
             to="/duduquiz"
-            className="text-[#2F7DFF] text-[20px] hover:opacity-80 transition-opacity" // ✅ hover 추가
+            className="text-[#2F7DFF] text-[20px] font-bold hover:opacity-80 transition-opacity" // ✅ hover 추가
           >
             두두퀴즈
           </Link>
           <Link
             to="/dudunote"
-            className="text-[#2F7DFF] text-[20px] hover:opacity-80 transition-opacity"
+            className="text-[#2F7DFF] text-[20px] font-bold hover:opacity-80 transition-opacity"
           >
             두두노트
           </Link>
           <Link
             to="/report"
-            className="text-[#2F7DFF] text-[20px] hover:opacity-80 transition-opacity"
+            className="text-[#2F7DFF] text-[20px] font-bold hover:opacity-80 transition-opacity"
           >
             리포트
           </Link>
@@ -42,7 +42,7 @@ export default function Header({ onMenuClick }) {
         <div className="flex items-center gap-4">
           <Link
             to="/login"
-            className="rounded-[20px] px-5 py-2 border font-bold border-[#2F7DFF] bg-[#2F7DFF] text-white text-sm hover:bg-[#2567E0] transition-colors" // ✅ hover 추가
+            className="rounded-[20px] px-5 py-2 border border-[#2F7DFF] bg-[#2F7DFF] text-white text-sm hover:bg-[#2567E0] transition-colors" // ✅ hover 추가
           >
             로그인
           </Link>

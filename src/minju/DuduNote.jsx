@@ -25,7 +25,7 @@ export default function DuduNote() {
   };
 
   return (
-    <div className="relative flex flex-col items-center min-h-screen bg-gradient-to-b from-[#E6F2FF] to-white">
+    <div className="relative flex flex-col items-center min-h-screen bg-gradient-to-b from-[#E6F2FF] to-white pb-23">
       {/* 헤더 fixed 때문에 여백 */}
       <main className="w-full max-w-[1200px] flex flex-col items-center pt-[140px]">
         <h1 className="text-[64px] font-bold bg-gradient-to-r from-[#60A5FA] to-[#027FFF] bg-clip-text text-transparent mb-10">
@@ -53,9 +53,7 @@ export default function DuduNote() {
                     <img src={icon} className="w-10 h-10 mb-2" />
                     <span
                       className={`text-[16px] ${
-                        isActive
-                          ? "text-white font-bold"
-                          : "text-gray-900"
+                        isActive ? "text-white font-bold" : "text-gray-900"
                       }`}
                     >
                       {label}

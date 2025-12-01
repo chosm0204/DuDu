@@ -32,7 +32,7 @@ export default function SideBar({ isOpen, onClose }) {
           <p className="text-[20px] text-gray-500">5학년 2학기</p>
           <p className="text-[25px] font-bold mt-1 leading-tight">손채영</p>
           <p className="text-[20px] text-gray-700 leading-tight mb-2">학생</p>
-          <button className="mt-4 px-6 py-1.5 rounded-full bg-[#2F7DFF] text-white text-[15px] font-semibold hover:bg-[#2567E0] transition-colors">
+          <button className="mt-4 px-6 py-1.5 rounded-full bg-[#2F7DFF] text-white text-[15px] hover:bg-[#2567E0] transition-colors">
             정보 수정
           </button>
         </div>
@@ -83,10 +83,10 @@ export default function SideBar({ isOpen, onClose }) {
 
         {/* 하단 버튼 */}
         <div className="border-t border-[#E5EAF2] px-6 py-4 flex gap-4 justify-center">
-          <button className="min-w-[120px] h-[40px] rounded-full bg-[#2F7DFF] text-white text-sm font-semibold shadow-[0_4px_10px_rgba(47,125,255,0.25)] hover:bg-[#2567E0] transition-colors">
+          <button className="min-w-[120px] h-[40px] rounded-full bg-[#2F7DFF] text-white text-sm shadow-[0_4px_10px_rgba(47,125,255,0.25)] hover:bg-[#2567E0] transition-colors">
             고객센터
           </button>
-          <button className="min-w-[120px] h-[40px] rounded-full bg-[#2F7DFF] text-white text-sm font-semibold shadow-[0_4px_10px_rgba(47,125,255,0.25)] hover:bg-[#2567E0] transition-colors">
+          <button className="min-w-[120px] h-[40px] rounded-full bg-[#2F7DFF] text-white text-sm shadow-[0_4px_10px_rgba(47,125,255,0.25)] hover:bg-[#2567E0] transition-colors">
             회원탈퇴
           </button>
         </div>

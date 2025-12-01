@@ -11,7 +11,7 @@ import Home6 from "./Home6";
 export default function HomeAll() {
   return (
     <div
-      className="relative flex flex-col items-center font-sans min-h-screen
+      className="relative flex flex-col items-center min-h-screen
                     bg-[linear-gradient(to_bottom,#E6F2FF_0%,#FFFFFF_20%,#E6F2FF_30%,#FFFFFF_50%,#E6F2FF_140%)]"
     >
       {/* 메인 검색 영역 */}

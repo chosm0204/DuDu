@@ -108,7 +108,7 @@ export default function Home2() {
           </motion.h2>
 
           <motion.p
-            className="text-[30px] text-[#4A7BFF] mb-8 text-center leading-relaxed"
+            className="text-[30px] text-[#4A7BFF] mb-8 text-left leading-relaxed"
             variants={springVariant}
           >
             생성형 AI가 내용을 카드뉴스로

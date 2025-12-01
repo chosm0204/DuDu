@@ -17,7 +17,7 @@ export default function Home3() {
       image: "idiom_main.jpg",
       question: (
         <>
-          <span className="text-[32px] font-bold text-[#1273FF] mb-2 block text-center">
+          <span className="text-[32px] text-[#1273FF] mb-2 block text-center">
             자업OO
           </span>
           빈 칸에 들어갈 말을 적어보세요

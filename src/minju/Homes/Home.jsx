@@ -31,14 +31,14 @@ export default function Home() {
 
   return (
     <div
-      className="w-full flex flex-col items-center"
+      className="w-full flex flex-col items-center font-miso"
       onClick={() => {
         setSelected(null);
         setHover(null);
       }}
     >
       <main className="pt-[200px] pb-[80px] flex flex-col items-center">
-        <h1 className="text-[65px] md:text-[84px] font-extrabold tracking-tight bg-gradient-to-r from-[#60A5FA] to-[#027FFF] bg-clip-text text-transparent">
+        <h1 className="text-[65px] md:text-[84px] font-bold tracking-tight bg-gradient-to-r from-[#60A5FA] to-[#027FFF] bg-clip-text text-transparent">
           {title}
         </h1>
 
@@ -69,26 +69,33 @@ export default function Home() {
       </main>
 
       <section className="flex flex-wrap justify-center gap-5 mt-[20px]">
-        {SUBJECTS.map(({ key, label, icon }) => (
-          <button
-            key={key}
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setSelected(key);
-            }}
-            onMouseEnter={() => setHover(key)}
-            onMouseLeave={() => setHover(null)}
-            className={`rounded-[18px] w-[115px] h-[115px] flex flex-col justify-center items-center shadow-[0_8px_20px_rgba(0,0,0,0.06)] cursor-pointer transition-all duration-200 ${
-              hover === key || selected === key ? "bg-[#60A5FA]" : "bg-white"
-            }`}
-          >
-            <img src={icon} alt={label} className="w-10 h-10 mb-2" />
-            <span className="font-semibold text-[16px] text-gray-900">
-              {label}
-            </span>
-          </button>
-        ))}
+        {SUBJECTS.map(({ key, label, icon }) => {
+          const active = hover === key || selected === key;
+          return (
+            <button
+              key={key}
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelected(key);
+              }}
+              onMouseEnter={() => setHover(key)}
+              onMouseLeave={() => setHover(null)}
+              className={`rounded-[18px] w-[115px] h-[115px] flex flex-col justify-center items-center shadow-[0_8px_20px_rgba(0,0,0,0.06)] cursor-pointer transition-all duration-200 ${
+                active ? "bg-[#60A5FA]" : "bg-white"
+              }`}
+            >
+              <img src={icon} alt={label} className="w-10 h-10 mb-2" />
+              <span
+                className={`text-[16px] ${
+                  active ? "text-white font-bold" : "text-gray-900"
+                }`}
+              >
+                {label}
+              </span>
+            </button>
+          );
+        })}
       </section>
     </div>
   );

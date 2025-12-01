@@ -1,6 +1,6 @@
 // src/Header.jsx
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const logo = "/logo.png";
 
@@ -21,19 +21,19 @@ export default function Header({ onMenuClick }) {
         <nav className="flex gap-[140px]">
           <Link
             to="/duduquiz"
-            className="text-[#2F7DFF] font-semibold text-[20px] hover:opacity-80 transition-opacity" // ✅ hover 추가
+            className="text-[#2F7DFF] text-[20px] hover:opacity-80 transition-opacity" // ✅ hover 추가
           >
             두두퀴즈
           </Link>
           <Link
             to="/dudunote"
-            className="text-[#2F7DFF] font-semibold text-[20px] hover:opacity-80 transition-opacity"
+            className="text-[#2F7DFF] text-[20px] hover:opacity-80 transition-opacity"
           >
             두두노트
           </Link>
           <Link
             to="/report"
-            className="text-[#2F7DFF] font-semibold text-[20px] hover:opacity-80 transition-opacity"
+            className="text-[#2F7DFF] text-[20px] hover:opacity-80 transition-opacity"
           >
             리포트
           </Link>

@@ -25,17 +25,17 @@ export default function DuduNote() {
   };
 
   return (
-    <div className="relative flex flex-col items-center min-h-screen bg-gradient-to-b from-[#E6F2FF] to-white font-sans">
+    <div className="relative flex flex-col items-center min-h-screen bg-gradient-to-b from-[#E6F2FF] to-white">
       {/* 헤더 fixed 때문에 여백 */}
       <main className="w-full max-w-[1200px] flex flex-col items-center pt-[140px]">
-        <h1 className="text-[64px] font-extrabold bg-gradient-to-r from-[#60A5FA] to-[#027FFF] bg-clip-text text-transparent mb-10">
+        <h1 className="text-[64px] font-bold bg-gradient-to-r from-[#60A5FA] to-[#027FFF] bg-clip-text text-transparent mb-10">
           두두노트
         </h1>
 
         <section className="w-full max-w-[1000px] bg-white rounded-[40px] shadow-[0_18px_40px_rgba(0,0,0,0.06)] px-16 py-12 flex flex-col gap-10">
           {/* 교과 */}
           <div>
-            <h2 className="text-[28px] font-extrabold mb-6">교과 선택</h2>
+            <h2 className="text-[28px] font-bold mb-6">교과 선택</h2>
 
             <div className="flex flex-wrap gap-5">
               {SUBJECT_DATA.map(({ key, label, icon }) => {
@@ -55,7 +55,7 @@ export default function DuduNote() {
                       className={`text-[16px] ${
                         isActive
                           ? "text-white font-bold"
-                          : "text-gray-900 font-medium"
+                          : "text-gray-900"
                       }`}
                     >
                       {label}
@@ -68,7 +68,7 @@ export default function DuduNote() {
 
           {/* 문제 수 */}
           <div>
-            <h2 className="text-[28px] font-extrabold mb-6">문제 수</h2>
+            <h2 className="text-[28px] font-bold mb-6">문제 수</h2>
 
             <div className="flex flex-wrap gap-5">
               {QUESTION_COUNTS_LIST.map((count) => {
@@ -83,7 +83,7 @@ export default function DuduNote() {
                       shadow-[0_8px_20px_rgba(0,0,0,0.04)] transition-all duration-200
                       ${
                         isActive
-                          ? "bg-[#60A5FA] text-white font-semibold"
+                          ? "bg-[#60A5FA] text-white font-bold"
                           : "bg-white text-gray-900"
                       }`}
                   >

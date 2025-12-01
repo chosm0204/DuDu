@@ -50,13 +50,11 @@ export default function Report() {
   };
 
   return (
-    <div className="relative flex flex-col items-center min-h-screen bg-gradient-to-b from-[#E6F2FF] to-white font-sans">
-      {/* 🔹 헤더는 App.jsx에서 공통 렌더링됨 → 이 파일에서는 제거 */}
-
+    <div className="relative flex flex-col items-center min-h-screen bg-gradient-to-b from-[#E6F2FF] to-white">
       {/* 헤더 높이만큼 패딩 */}
       <main className="w-full max-w-[1200px] flex flex-col items-center pt-[140px] pb-20">
         <h1
-          className="text-[64px] font-extrabold bg-gradient-to-r from-[#60A5FA] to-[#027FFF] 
+          className="text-[64px] font-bold bg-gradient-to-r from-[#60A5FA] to-[#027FFF] 
                       bg-clip-text text-transparent mb-8"
         >
           리포트
@@ -82,9 +80,7 @@ export default function Report() {
                 <img src={icon} alt={label} className="w-10 h-10 mb-2" />
                 <span
                   className={`text-[16px] ${
-                    isActive
-                      ? "text-white font-bold"
-                      : "text-gray-900 font-medium"
+                    isActive ? "text-white font-bold" : "text-gray-900"
                   }`}
                 >
                   {label}
@@ -98,7 +94,7 @@ export default function Report() {
         <section className="w-full max-w-[1100px] mx-auto flex justify-center gap-16 mt-4">
           {/* 단원 리스트 */}
           <div className="w-[320px] flex-shrink-0">
-            <h2 className="text-[22px] font-extrabold mb-6">단원</h2>
+            <h2 className="text-[22px] font-bold mb-6">단원</h2>
             <div className="flex flex-col gap-4">
               {units.map((unitLabel, idx) => {
                 const active = idx === selectedUnit;
@@ -112,7 +108,7 @@ export default function Report() {
                       transition-all duration-200
                       ${
                         active
-                          ? "bg-[#DDEBFF] text-[#1D4ED8] font-semibold"
+                          ? "bg-[#DDEBFF] text-[#1D4ED8] font-bold"
                           : "bg-white text-gray-900"
                       }`}
                   >
@@ -127,7 +123,7 @@ export default function Report() {
 
           {/* 오른쪽 영역 */}
           <div className="flex-1">
-            <h2 className="text-[22px] font-extrabold mb-6">
+            <h2 className="text-[22px] font-bold mb-6">
               {selectedView === "quiz" ? "퀴즈" : "모아보기"}
             </h2>
 
@@ -147,7 +143,7 @@ export default function Report() {
                       alt="카드뉴스"
                       className="w-[75px] h-[75px] mb-4"
                     />
-                    <p className="text-[25px] font-extrabold">카드뉴스</p>
+                    <p className="text-[25px] font-bold">카드뉴스</p>
                   </button>
 
                   <button
@@ -162,7 +158,7 @@ export default function Report() {
                       alt="퀴즈"
                       className="w-[65px] h-[75px] mb-4"
                     />
-                    <p className="text-[25px] font-extrabold">퀴즈</p>
+                    <p className="text-[25px] font-bold">퀴즈</p>
                   </button>
                 </div>
               )}
@@ -171,7 +167,7 @@ export default function Report() {
               {selectedView === "quiz" && (
                 <div
                   className="w-[440px] bg-white rounded-[24px] shadow-[0_12px_24px_rgba(0,0,0,0.06)]
-                                px-10 py-8 space-y-4"
+                             px-10 py-8 space-y-4"
                 >
                   {currentQuizList.map((text, idx) => (
                     <div
@@ -184,7 +180,7 @@ export default function Report() {
                         }`}
                     >
                       <p>{text}</p>
-                      <button className="px-5 py-2 rounded-full bg-[#2F7DFF] text-white text-sm font-semibold">
+                      <button className="px-5 py-2 rounded-full bg-[#2F7DFF] text-white text-sm font-bold">
                         풀기
                       </button>
                     </div>

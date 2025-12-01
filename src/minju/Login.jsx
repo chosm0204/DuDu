@@ -27,7 +27,7 @@ export default function Login() {
       <main className="flex flex-col items-center mt-5">
         <img src="/logo.png" alt="로고" className="w-35 h-35 mb-6" />
 
-        <p className="text-[#2F7DFF] text-[35px] font-bold text-center leading-snug mb-8">
+        <p className="text-[#2F7DFF] text-[35px] text-center leading-snug mb-8">
           로그인하고
           <br />
           더 많은 두두를 즐겨보세요
@@ -50,14 +50,14 @@ export default function Login() {
               <input type="checkbox" className="w-4 h-4" />
               <span>자동 로그인</span>
             </label>
-            <button className="text-[#2F7DFF] font-medium">
+            <button className="text-[#2F7DFF]">
               비밀번호 찾기
             </button>
           </div>
 
           {/* ========== 로그인 + 회원가입 버튼========== */}
           <button
-            className="mt-4 w-full rounded-full py-3 bg-gradient-to-r from-[#2E7BFF] to-[#3F8CFF] text-white font-semibold text-[16px]"
+            className="mt-4 w-full rounded-full py-3 bg-gradient-to-r from-[#2E7BFF] to-[#3F8CFF] text-white text-[16px]"
             onClick={goToMemberType}
           >
             로그인
@@ -66,7 +66,7 @@ export default function Login() {
           <div className="w-full h-px bg-[#E5EDF9] my-3" />
 
           <button
-            className="mt-2 w-full rounded-full py-3 bg-gradient-to-r from-[#5FAAFF] to-[#7BB8FF] text-white font-semibold text-[16px]"
+            className="mt-2 w-full rounded-full py-3 bg-gradient-to-r from-[#5FAAFF] to-[#7BB8FF] text-white text-[16px]"
             onClick={goToMemberType}
           >
             회원가입
